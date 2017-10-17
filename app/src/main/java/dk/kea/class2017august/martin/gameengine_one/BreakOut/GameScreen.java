@@ -12,9 +12,9 @@ import dk.kea.class2017august.martin.gameengine_one.State;
 
 public class GameScreen extends Screen
 {
-    enum state
+    enum State
     {
-        Pause,
+        Paused,
         Running,
         GameOver
     }
@@ -22,13 +22,15 @@ public class GameScreen extends Screen
     Bitmap background = null;
     Bitmap resume = null;
     Bitmap gameOver = null;
+    State state = State.Running;
+
     World world = null;
-    WorldRenderer renderer = null;
+    WorldRenderer worldRenderer = null;
 
     public GameScreen(GameEngine gameEngine) {
         super(gameEngine);
         world = new World();
-        renderer = new WorldRenderer(gameEngine, world);
+        worldRenderer = new WorldRenderer(gameEngine, world);
         background = gameEngine.loadBitmap("BreakOutAssets/background.png");
         resume = gameEngine.loadBitmap("BreakOutAssets/resume.png");
         gameOver = gameEngine.loadBitmap("BreakOutAssets/gameover.png");
@@ -54,6 +56,12 @@ public class GameScreen extends Screen
             return;
         }
         gameEngine.drawBitmap(background, 0, 0);
+
+        if(state == State.Running)
+        {
+            world.update(deltaTime, gameEngine.getAccelerometer()[0]);
+        }
+        worldRenderer.render();
 
         if(state == State.Paused)
         {
