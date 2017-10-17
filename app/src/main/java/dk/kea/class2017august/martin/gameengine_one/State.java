@@ -11,5 +11,6 @@ public enum State
     Running,
     Paused,
     Resumed,
-    Disposed;
+    Disposed,
+    GameOver
 }

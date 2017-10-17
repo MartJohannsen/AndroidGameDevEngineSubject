@@ -51,6 +51,8 @@ public abstract class GameEngine extends Activity implements Runnable, SensorEve
 
     private float[] accelerometer = new float[3];
 
+    private int framesPerSecond = 0;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState)
@@ -330,6 +332,11 @@ public abstract class GameEngine extends Activity implements Runnable, SensorEve
     @Override
     public void run()
     {
+        int frames = 0;
+        long startTime = System.nanoTime();
+        long currentTime = startTime;
+        float deltaTime = 0;
+
         while(true)
         {
             synchronized (stateChanges)
@@ -385,10 +392,13 @@ public abstract class GameEngine extends Activity implements Runnable, SensorEve
                 //canvas.drawColor(Color.CYAN);
 
                 fillEvents();
+                currentTime = System.nanoTime();
+                deltaTime = (currentTime - startTime) / 1000000000.0f;
                 if(screen != null)
                 {
-                    screen.update(0);
+                    screen.update(deltaTime);
                 }
+                startTime = currentTime;
                 freeEvents();
                 // After the screen has mad all gameobjects to the virtualScreen we need
                 // to copy and resize the virtual screen to the actual/physical surfaceview
@@ -404,7 +414,17 @@ public abstract class GameEngine extends Activity implements Runnable, SensorEve
                 canvas.drawBitmap(virtualScreen, src, dst, null);
 
                 surfaceHolder.unlockCanvasAndPost(canvas);
+            }   //End of running
+            frames++;
+            if ((System.nanoTime() - startTime) > 1000000000)
+            {
+                framesPerSecond = frames;
+                frames = 0;
+                startTime = System.nanoTime();
+                Log.d("MainLoop", "FramesPerSecond = " + framesPerSecond + "*");
             }
-        }
-    }
+
+
+        }   // End of while loop
+    } // End of run
 }

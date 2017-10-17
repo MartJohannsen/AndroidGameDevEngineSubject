@@ -13,10 +13,13 @@ import java.util.List;
 public class TestScreen extends Screen
 {
     Bitmap bob = null;
+    int bobX = 0;
+    int bobY = 50;
     TouchEvent event = null;
     Sound sound = null;
     Music music = null;
     boolean isPlaying = false;
+
 
     public TestScreen(GameEngine gameEngine)
     {
@@ -32,6 +35,17 @@ public class TestScreen extends Screen
     public void update(float deltaTime)
     {
         gameEngine.clearFramedBuffer(Color.MAGENTA);
+
+        bobX = bobX + (int) (10 * deltaTime);
+        if(bobX > gameEngine.getFramedBufferWidth())
+        {
+            bobX = 0 - bob.getWidth();
+        }
+
+        gameEngine.drawBitmap(bob, bobX, bobY);
+
+
+
         //gameEngine.drawBitmap(bob, 200, 100);
 
         //gameEngine.drawBitmap(bob, 100, 200, 0, 0, 64, 64);
