@@ -29,7 +29,7 @@ public class GameScreen extends Screen
 
     public GameScreen(GameEngine gameEngine) {
         super(gameEngine);
-        world = new World();
+        world = new World(gameEngine);
         worldRenderer = new WorldRenderer(gameEngine, world);
         background = gameEngine.loadBitmap("BreakOutAssets/background.png");
         resume = gameEngine.loadBitmap("BreakOutAssets/resume.png");

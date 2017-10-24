@@ -3,6 +3,8 @@ package dk.kea.class2017august.martin.gameengine_one.BreakOut;
 import java.util.ArrayList;
 import java.util.List;
 
+import dk.kea.class2017august.martin.gameengine_one.GameEngine;
+
 /**
  * Created by Martin on 10-10-2017.
  */
@@ -17,16 +19,18 @@ public class World
     Ball ball = new Ball();
     Paddle paddle = new Paddle();
     List<Block> blocks = new ArrayList<>();
+    GameEngine gameEngine;
 
-    public World()
+    public World(GameEngine ge)
     {
+        this.gameEngine = ge;
         generateBlocks();
     }
 
     private void generateBlocks()
     {
         blocks.clear();
-        for (int y = 50, type = 0; y < 50 +8*Block.HEIGHT; y = y + (int) Block.HEIGHT, type++)
+        for (int y = 50, type = 0; y < 50 +(8*Block.HEIGHT); y = y + (int) Block.HEIGHT, type++)
         {
             for(int x = 20; x < MAX_X - Block.WIDTH/2; x = x + (int) Block.WIDTH)
             {
@@ -61,9 +65,14 @@ public class World
             ball.y = (int)(MAX_Y-ball.HEIGHT);
         }
 
-        paddle.x = paddle.x +accelX * deltatime * 10;
+        paddle.x = paddle.x + accelX * deltatime * 10;
         if(paddle.x < MIN_Y) paddle.x = MIN_X;
         if(paddle.x +paddle.WIDTH > MAX_X) paddle.x = MAX_X - paddle.WIDTH;
+
+        if(gameEngine.getTouchY(0) > 450)
+        {
+            paddle.x = gameEngine.getTouchX(0);
+        }
 
         collideBallPaddle();
         collideBallBlocks(deltatime);
@@ -146,8 +155,7 @@ public class World
         {
             block = blocks.get(i);
 
-            if(collideRects(ball.x, ball.y, Ball.WIDTH, Ball.HEIGHT,
-                    block.x, block.y, Block.WIDTH, Block.HEIGHT));
+            if(collideRects(ball.x, ball.y, Ball.WIDTH, Ball.HEIGHT, block.x, block.y, Block.WIDTH, Block.HEIGHT))
             {
                 blocks.remove(i);
                 i = i - 1;
@@ -171,6 +179,5 @@ public class World
         {
             return false;
         }
-
     }
 }
